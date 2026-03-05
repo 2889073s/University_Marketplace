@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'marketplace'
 ]
 
 MIDDLEWARE = [
@@ -50,11 +51,15 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'University_Marketplace.urls'
-
+#code below is used to configure the media file
+MEDIA_DIR = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = MEDIA_DIR
+MEDIA_URL ='/media/'
+TEMPLATE_DIR = os.path.join(BASE_DIR, "templates") #this will be <your workspace>/University_Marketplace/templates 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [TEMPLATE_DIR],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -62,10 +67,12 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.media'
             ],
         },
     },
 ]
+
 
 WSGI_APPLICATION = 'University_Marketplace.wsgi.application'
 

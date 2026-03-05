@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+    {% load staticfiles %}  <!-- enables django's { static %} tags -->
+    <head>
+        <title> {% block title_block %} <!-- the page title will go here-->{% endblock %} </title>
+    </head>
+    <body>
+
+        <div>
+            {% block body_block %} 
+                <!-- the child templates will insert the page-specefic conetent here-->
+            {% endblock %}
+        </div>
+
+        <div>
+            <ul>
+                    <!-- links generated using Django's { url%} tag -->
+                    <li><a href="{% url 'marketplace:home' %}">Home Page</a></li>
+                    <li><a href="{% url 'admin:index' %}">Admin page</a></li>
+
+            </ul>
+        </div>
+    </body>
+
+
+</html>
