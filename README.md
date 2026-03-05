@@ -32,9 +32,12 @@ Steps to set up the django project
 
    - ------extra------ in vs code to change to the correct interpreter by shift+command+p then "python select interpreter" then "Python 3.11.14 (WADenv)"
 
-7) To fill the database with sample data, run the following command in your terminal after activating your virtual environment:
+7) To fill the database with sample data, run the following command in your terminal after activating your virtual environment (you also need to create a superuser to acess the admin page):
 
                 python population_script.py
+
+               python3 manage.py createsuperuser
+   
 
 How to update code when the repo changes:
 
