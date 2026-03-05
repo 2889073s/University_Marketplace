@@ -24,7 +24,9 @@ Steps to set up the django project
     ------extra------ in vs code to change to the correct interpreter by shift+command+p then "python select interpreter" then "Python 3.11.14 (WADenv)"
 
 
------note---- Yuma add the instruction on how to populate datebase here
+-----note---- 
+To fill the database with sample data, run the following command in your terminal after activating your virtual environment:
+python population_script.py
 
 How to update code when the repo changes
 1) go into project and activate env
