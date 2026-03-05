@@ -19,6 +19,11 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return self.user.username
+    
+# Ensure the email field in the User model is unique and mandatory
+User._meta.get_field('email')._unique = True
+User._meta.get_field('email').blank = False
+User._meta.get_field('email').null = False
 
 
 # Tags: Used for filtering and categorizing products

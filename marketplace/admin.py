@@ -5,7 +5,11 @@ from marketplace.models import UserProfile, Tag, Product, Review
 # User Profile Admin: Monitor balances and ratings
 class UserProfileAdmin(admin.ModelAdmin):
     # Display key user metrics in the list view
-    list_display = ("user", "profile_picture", "account_balance", "avg_rating")
+    list_display = ("user", "get_email", "profile_picture", "account_balance", "avg_rating")
+    
+    def get_email(self, obj):
+        return obj.user.email
+    get_email.short_description = 'Email Address'
 
 
 # Tag Admin: Manage categories
