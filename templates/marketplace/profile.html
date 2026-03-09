@@ -1,0 +1,103 @@
+{% extends "marketplace/base.html" %}
+
+{% block title_block %}
+    My profile
+{% endblock %}
+
+{% block body_block %}
+    {% if profile %}
+        <div> 
+            <ul>                
+                {% if profile.profile_picture %}
+                     <img src="{{ profile.profile_picture.url }}" alt="{{ profile.user.username }}" />
+                {% else %} 
+                    <p> no image available </p>
+                {% endif %}
+                    <li> {{ profile.user.username }}</li>
+                    <li> {{ profile.user.email }}</li>
+                    <li> {{ profile.avg_rating }}</li>
+                    <li> {{ profile.account_balance }}</li>
+            </ul> 
+        </div>
+
+        <div>
+            <div>
+                <h2> Items im selling </h2>
+                {% if active_products %}
+                    
+                    {% for product in active_products %}
+                        <ul>
+                            <li>
+                                {% if product.image %}
+                                    <img src="{{ product.image.url }}" alt= "{{ product.name }}" />
+                                {% else %}
+                                    <p> no image available </p>
+                                {% endif %}
+                            </li>
+                            <li><a href="{% url 'marketplace:product_page' product.seller.slug product.slug %}">
+                                    {{ product.name }} </a> 
+                                    - {{ product.tag }} - £{{ product.price}}
+                            </li> <!-- add edit and delete buttons/forms here-->
+                        </ul> 
+                    {% endfor %}
+                {% else %}
+                    <strong>There are no active products </strong>
+                {% endif %}
+            </div>
+
+            <div>
+                <h2> Items i've sold </h2>
+                {% if sold_products %}
+                    
+                    {% for product in sold_products %}
+                        <ul>
+                            <li>
+                                {% if product.image %}
+                                    <img src="{{ product.image.url }}" alt= "{{ product.name }}" />
+                                {% else %}
+                                    <p> no image available </p>
+                                {% endif %}
+                            </li>
+                            <li><a href="{% url 'marketplace:product_page' product.seller.slug product.slug %}">
+                                    {{ product.name }} </a> 
+                                    - {{ product.tag }} - £{{ product.price}}
+                            </li>
+                        </ul> 
+                    {% endfor %}
+                {% else %}
+                    <strong>There are no sold products </strong>
+                {% endif %}
+            </div>
+
+            <div>
+                <h2> Items i've bought </h2>
+                {% if bought_products %}
+                    
+                    {% for product in bought_products %}
+                        <ul>
+                            <li>
+                                {% if product.image %}
+                                    <img src="{{ product.image.url }}" alt= "{{ product.name }}" />
+                                {% else %}
+                                    <p> no image available </p>
+                                {% endif %}
+                            </li>
+                            <li><a href="{% url 'marketplace:product_page' product.seller.slug product.slug %}">
+                                    {{ product.name }} </a> 
+                                    - {{ product.tag }} - £{{ product.price}}
+                            </li>
+                        </ul> 
+                    {% endfor %}
+                {% else %}
+                    <strong> You havent bought anything </strong>
+                {% endif %}
+            </div>
+
+
+
+        </div>
+    {% else %}
+        <p> you are not logged in <p>
+    {% endif %}
+
+{% endblock %}

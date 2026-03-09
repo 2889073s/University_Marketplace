@@ -28,5 +28,19 @@
                     <p> no image available </p>
                 {% endif %}
             </div>
+            <div>
+                <ul>
+                    {% if product.seller.profile_picture %}
+                        <img src="{{ product.seller.profile_picture.url }}" alt= "{{ product.seller.user.profile_picture}}" />
+                    {% else %} 
+                        <p> no image available </p>
+                    {% endif %}
+                    <li> <a href="{% url 'marketplace:seller_page' product.seller.slug %}">
+                                {{ product.seller.user.username }}
+                    </a></li>
+                    <li> {{ product.seller.user.email }} </li>
+                    <li> {{ product.seller.avg_rating }} </li>
+                </ul> 
+            </div>
         {% endif %}
 {% endblock %}

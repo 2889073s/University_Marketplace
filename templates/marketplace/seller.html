@@ -1,0 +1,43 @@
+{% extends "marketplace/base.html" %}
+
+{% block title_block %}
+    {% if seller %}
+        seller : {{ seller.user.username }}
+    {% else %}
+        Unknown seller
+    {% endif %}
+{% endblock %}
+
+{% block body_block %}
+    {% if seller %}
+        <div> 
+            <ul>                
+                {% if seller.profile_picture %}
+                    <img src="{{ seller.profile_picture.url }}" alt= "{{ seller.user.profile_picture}}" />
+                {% else %} 
+                    <p> no image available </p>
+                {% endif %}
+                    <li> {{ seller.user.username }}</li>
+                    <li> {{ seller.user.email }}</li>
+                    <li> {{ seller.avg_rating }}</li>
+            </ul> 
+        </div>
+
+        <div>
+            {% if products %}
+                <ul>
+                    {% for product in products%}
+                        <li>
+                            <a href="{% url 'marketplace:product_page' product.seller.slug product.slug %}">
+                                {{ product.name }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <strong>There are no products</strong>
+            {% endif %}
+        </div>
+    {% endif %}
+
+{% endblock %}
