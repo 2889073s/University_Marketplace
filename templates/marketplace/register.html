@@ -1,0 +1,16 @@
+{% extends "marketplace/base.html" %}
+
+{% block title_block %}
+    Register page
+{% endblock %}
+
+{% block body_block %}
+        <h1> Register </h1>
+        {% if user.is_authenticated %}
+            <p> You are already logged in  </p>
+        {% else %}
+        <div>
+            <!-- add register form -->
+        </div>
+        {% endif %}
+{% endblock %}

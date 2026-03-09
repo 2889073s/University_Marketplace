@@ -37,7 +37,11 @@
                             <li><a href="{% url 'marketplace:product_page' product.seller.slug product.slug %}">
                                     {{ product.name }} </a> 
                                     - {{ product.tag }} - £{{ product.price}}
-                            </li> <!-- add edit and delete buttons/forms here-->
+                            </li> 
+                            <li>
+                                <a href="{% url 'marketplace:edit_product_page' product.slug %}">Edit</a>
+                                <a href="{% url 'marketplace:delete_product_page' product.slug %}">Delete</a>
+                            </li>
                         </ul> 
                     {% endfor %}
                 {% else %}
