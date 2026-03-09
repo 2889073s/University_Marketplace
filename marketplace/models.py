@@ -17,6 +17,15 @@ class UserProfile(models.Model):
     # Calculated field for the user's average rating as a seller
     avg_rating = models.FloatField(default=0.0)
 
+    #slug is used to crerate readible urls
+    slug = models.SlugField(unique=True)
+
+    #Overriding the save field so everytime the username changes the slug will update with it 
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.user.username)
+        super(UserProfile, self).save(*args, **kwargs)
+
     def __str__(self):
         return self.user.username
     
@@ -69,6 +78,19 @@ class Product(models.Model):
 
     # determines if the product status is 'Selling'(False) or 'Sold'(True)
     is_sold = models.BooleanField(default=False)
+
+    #slug is used to crerate readible urls
+    slug = models.SlugField()
+
+    #Makes the product slug unique per seller
+    class Meta: 
+        unique_together = ('seller', 'slug')
+
+    #Overriding the save field so everytime the name changes the slug will update with it 
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super(Product, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.name

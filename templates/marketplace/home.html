@@ -5,5 +5,22 @@
 {% endblock %}
 
 {% block body_block %}
-        <h1>homehomehome</h1>
+        <h1>Home</h1>
+        <div>
+            {% if products %}
+                <ul>
+                    {% for product in products%}
+                        <li>
+                            <a href="{% url 'marketplace:product_page' product.seller.slug product.slug %}">
+                                {{ product.name }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <strong>There are no products</strong>
+            {% endif %}
+        </div>
+
+
 {% endblock %}

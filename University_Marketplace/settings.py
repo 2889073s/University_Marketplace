@@ -52,9 +52,9 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'University_Marketplace.urls'
 #code below is used to configure the media file
+MEDIA_URL ='/media/'
 MEDIA_DIR = os.path.join(BASE_DIR, 'media')
 MEDIA_ROOT = MEDIA_DIR
-MEDIA_URL ='/media/'
 TEMPLATE_DIR = os.path.join(BASE_DIR, "templates") #this will be <your workspace>/University_Marketplace/templates 
 TEMPLATES = [
     {

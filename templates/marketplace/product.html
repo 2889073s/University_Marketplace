@@ -1,0 +1,32 @@
+{% extends "marketplace/base.html" %}
+
+{% block title_block %}
+    {% if product %}
+        {{ product.name }}
+    {% else %}
+        Unknown product
+    {% endif %}
+{% endblock %}
+
+{% block body_block %}
+        {% if product %}
+            <h1>{{ product.name }}</h1>
+            <div>
+                <ul>
+                    <li> {{ product.name }} </li>
+                    <li> {{ product.tag }} </li>
+                    <li> {{ product.seller }} </li>
+                    <li> {{ product.price }}</li>
+                    <li> {{ product.description }}</li>
+                    <li> buy </li> 
+                </ul> 
+            </div>
+            <div>
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" alt= "{{ product.name }}" />
+                {% else %}
+                    <p> no image available </p>
+                {% endif %}
+            </div>
+        {% endif %}
+{% endblock %}
