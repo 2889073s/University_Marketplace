@@ -7,10 +7,16 @@
 {% block body_block %}
         <h1> Register </h1>
         {% if user.is_authenticated %}
-            <p> You are already logged in  </p>
+            <p> Thank you for registering</p>
+            <a href="{% url 'marketplace:home' %}">Return to the homepage.</a><br />
         {% else %}
-        <div>
-            <!-- add register form -->
-        </div>
+            <form id="user_form" method="POST" action="{% url 'marketplace:register' %}"
+                enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ user_form.as_p }}
+                {{ profile_form.as_p }}
+                <input type="submit" name="submit" value="Register" />
+                </form>
+            {% csrf_token %}
         {% endif %}
 {% endblock %}

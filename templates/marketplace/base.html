@@ -21,10 +21,10 @@
                     {% if user.is_authenticated %}
                     <li><a href="{% url 'marketplace:profile_page' %}">Profile</a></li>
                     <li><a href="{% url 'marketplace:sell_page' %}">Sell</a></li>
-                    <li><a href="{% url 'marketplace:user_logout' %}">Logout</a></li>
+                    <li><a href="{% url 'marketplace:logout' %}">Logout</a></li>
                 {% else %}
-                    <li><a href="{% url 'marketplace:user_register' %}">Register</a></li>
-                    <li><a href="{% url 'marketplace:user_login' %}">Login</a></li>
+                    <li><a href="{% url 'marketplace:register' %}">Register</a></li>
+                    <li><a href="{% url 'marketplace:login' %}">Login</a></li>
                 {% endif %}
 
                 <li><a href="{% url 'admin:index' %}">Admin</a></li> <!-- delete once dev is done-->
