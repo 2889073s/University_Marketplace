@@ -1,9 +1,10 @@
 from django.shortcuts import render, redirect
-from marketplace.models import Product, UserProfile 
+from marketplace.models import Product, UserProfile, Tag
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from .forms import UserForm, UserProfileForm
 from django.contrib.auth import authenticate, login, logout
+from django.template.loader import render_to_string
 from django.http import HttpResponse
 from django.contrib import messages
 from django.utils import timezone
@@ -121,7 +122,43 @@ def user_logout(request):
     return redirect('marketplace:home')
 
 def search_page(request):
-    context_dict = {}
+    query = request.GET.get('q', '').strip()
+    tag_id = request.GET.get('tag', '').strip()
+    sort = request.GET.get('sort', '').strip()
+
+    products = Product.objects.filter(is_sold=False)
+
+    if query:
+        products = products.filter(name__icontains=query)
+
+    if tag_id:
+        products = products.filter(tag_id=tag_id)
+
+    if sort == 'price_asc':
+        products = products.order_by('price')
+    elif sort == 'price_desc':
+        products = products.order_by('-price')
+    else:
+        products = products.order_by('-list_date')
+
+    tags = Tag.objects.all()
+
+    context_dict = {
+        'products': products,
+        'tags': tags,
+        'query': query,
+        'selected_tag': tag_id,
+        'selected_sort': sort,
+    }
+
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        html = render_to_string(
+            'marketplace/partials/search_results.html',
+            {'products': products},
+            request=request
+        )
+        return HttpResponse(html)
+
     return render(request, 'marketplace/search.html', context=context_dict)
 
 def sell_page(request):
