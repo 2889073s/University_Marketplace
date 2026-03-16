@@ -18,7 +18,11 @@
                     <li> {{ product.seller }} </li>
                     <li> {{ product.price }}</li>
                     <li> {{ product.description }}</li>
-                    <li> buy </li> 
+                    <li> <form method = "POST" action = "{% url 'marketplace:buy_product' product.seller.slug product.slug %}">
+                        {% csrf_token %}
+                        <button type="submit"> Buy </button>
+                        </form>
+                    </li> 
                 </ul> 
             </div>
             <div>

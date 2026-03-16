@@ -5,6 +5,15 @@
         <title> {% block title_block %} <!-- the page title will go here--> {% endblock %} </title>
     </head>
     <body>
+        <!--this will display any messages and you can post the messages using messages.success(request, ("Message"))-->
+        {% if messages %}
+            <ul>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
 
         <div>
             {% block body_block %} 

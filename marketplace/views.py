@@ -5,13 +5,21 @@ from django.urls import reverse
 from .forms import UserForm, UserProfileForm
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse
+from django.contrib import messages
+from django.utils import timezone
 
 # Create your views here.
 def home(request):
     context_dict = {}
     #Just going to display 20 random products on homepage
     #Josh -change below code if you want more products on the homepage
-    random_product_list = Product.objects.order_by('?')[:20]
+    if request.user.is_authenticated: #if user is logged in, doesnt show their own products on the homepage
+        try:
+            random_product_list = Product.objects.exclude(seller = request.user.userprofile).exclude( is_sold = True).order_by('?')[:20]
+        except UserProfile.DoesNotExist:
+            random_product_list = Product.objects.exclude( is_sold = True).order_by('?')[:20]
+    else:
+        random_product_list = Product.objects.exclude( is_sold = True).order_by('?')[:20]
     context_dict["products"] = random_product_list
     return render(request, 'marketplace/home.html', context = context_dict)
 
@@ -121,7 +129,7 @@ def sell_page(request):
     return render(request, 'marketplace/sell.html', context=context_dict)
 
 
-def review_page(request, seller_username_slug):
+def review_page(request, seller_username_slug, product_name_slug):
     context_dict = {}
     return render(request, 'marketplace/review.html', context=context_dict)
 
@@ -146,6 +154,44 @@ def delete_product_page(request, product_name_slug):
     except Product.DoesNotExist:
         context_dict["product"] = None
     return render(request, 'marketplace/delete_product.html', context=context_dict)
+
+def buy_product(request, seller_username_slug, product_name_slug):
+    if request.method == "POST":
+        if request.user.is_authenticated:
+            product = Product.objects.get(slug = product_name_slug, seller__slug = seller_username_slug)
+            buyer = UserProfile.objects.get(user=request.user )
+            seller = product.seller
+            if buyer == seller:
+                messages.success(request, ("You can't buy your own product"))
+                return redirect('marketplace:product_page',product.seller.slug, product.slug)
+            elif buyer.account_balance < product.price:
+                messages.success(request, ("Insufficient funds"))
+                return redirect('marketplace:product_page',product.seller.slug, product.slug)
+                
+            elif product.is_sold:
+                messages.success(request, ("Product is not avaliable anymore"))
+                return redirect('marketplace:product_page',product.seller.slug, product.slug)
+            else:
+                #proccess payment
+                buyer.account_balance -= product.price
+                seller.account_balance += product.price
+                buyer.save()
+                seller.save()
+
+                product.is_sold = True
+                product.buyer = buyer
+                product.purchase_date = timezone.now()
+                product.save()
+
+                messages.success(request, ("Successful transaction"))
+
+                return redirect('marketplace:review_page', seller_username_slug=product.seller.slug, product_name_slug=product.slug)
+
+        else: #if user isnt logged in, take them to login page
+            messages.success(request, ("You have to be logged in"))
+            return redirect('marketplace:login')
+    else:
+        return redirect('marketplace:home')
 
 
 

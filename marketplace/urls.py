@@ -16,6 +16,6 @@ urlpatterns = [
     path('review/<slug:seller_username_slug>/', views.review_page, name = 'review_page'),
     path('profile/edit-product/<slug:product_name_slug>/', views.edit_product_page, name="edit_product_page"),
     path('profile/delete-product/<slug:product_name_slug>/', views.delete_product_page, name="delete_product_page"),
-
+    path('seller/<slug:seller_username_slug>/<slug:product_name_slug>/buy/', views.buy_product, name = 'buy_product'),
 
 ]
