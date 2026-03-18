@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from marketplace.models import Product, UserProfile, Tag
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
-from .forms import UserForm, UserProfileForm
+from .forms import ProductForm, UserForm, UserProfileForm
 from django.contrib.auth import authenticate, login, logout
 from django.template.loader import render_to_string
 from django.http import HttpResponse
@@ -178,7 +178,21 @@ def edit_product_page(request, product_name_slug):
         product = Product.objects.get(seller=profile, slug=product_name_slug)
         context_dict["product"] = product
     except Product.DoesNotExist:
-        context_dict["product"] = None
+        product = None
+    
+    if product:
+        if request.method == 'POST':
+            form = ProductForm(request.POST, request.FILES, instance=product)
+            if form.is_valid():
+                form.save()
+                return redirect('marketplace:product_page', product_name_slug=product.slug,seller_username_slug=product.seller.slug)
+        else:
+            form = ProductForm(instance=product) 
+
+        context_dict['form'] = form
+    context_dict['product'] = product
+
+
     return render(request, 'marketplace/edit_product.html', context=context_dict)
 
 @login_required

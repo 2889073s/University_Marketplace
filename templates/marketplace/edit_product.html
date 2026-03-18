@@ -8,7 +8,11 @@
         <h1>Edit product</h1>
         <div>
             {% if product %}
-            <!-- add product edit form here-->
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit">Save</button>
+                </form>
              {% else %}
                 <p> product not found </p>
             {% endif %}
