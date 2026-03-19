@@ -16,7 +16,10 @@
                     <li> {{ profile.user.username }}</li>
                     <li> {{ profile.user.email }}</li>
                     <li> {{ profile.avg_rating }}</li>
-                    <li> {{ profile.account_balance }}</li>
+                    <li>Balance: £{{ profile.account_balance }}</li>
+                    <li>
+                        <a href="{% url 'marketplace:charge_balance' %}">Add Funds (Top-up)</a>
+                    </li>
             </ul> 
         </div>
 

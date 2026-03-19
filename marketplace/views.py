@@ -8,6 +8,7 @@ from django.template.loader import render_to_string
 from django.http import HttpResponse
 from django.contrib import messages
 from django.utils import timezone
+from .forms import ChargeBalanceForm
 
 # Create your views here.
 def home(request):
@@ -263,6 +264,23 @@ def buy_product(request, seller_username_slug, product_name_slug):
             return redirect('marketplace:login')
     else:
         return redirect('marketplace:home')
+    
+@login_required
+def charge_balance(request):
+    profile = UserProfile.objects.get(user=request.user)
+    
+    if request.method == 'POST':
+        form = ChargeBalanceForm(request.POST)
+        if form.is_valid():
+            amount = form.cleaned_data['amount']
+            profile.account_balance += amount
+            profile.save()
+            messages.success(request, f"Successfully added £{amount} to your balance!")
+            return redirect('marketplace:profile_page')
+    else:
+        form = ChargeBalanceForm()
+
+    return render(request, 'marketplace/charge_balance.html', {'form': form, 'profile': profile})
 
 
 
