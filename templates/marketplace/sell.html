@@ -7,7 +7,11 @@
 {% block body_block %}
         <h1>Sell an item</h1>
         <div>
-            <!-- add sell form -->
+            <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit">Save</button>
+            </form>
         </div>
 
 
