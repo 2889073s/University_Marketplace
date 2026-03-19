@@ -161,8 +161,23 @@ def search_page(request):
 
     return render(request, 'marketplace/search.html', context=context_dict)
 
+@login_required
 def sell_page(request):
     context_dict = {}
+    if request.method == 'POST':
+        form = ProductForm(request.POST, request.FILES)
+        if form.is_valid():
+            product = form.save(commit=False)
+            product.seller = UserProfile.objects.get(user=request.user)
+            form.save()
+            
+            return redirect('marketplace:product_page', product_name_slug=product.slug,seller_username_slug=product.seller.slug)
+    else:
+        form = ProductForm()
+    
+    context_dict['form'] = form
+    context_dict['seller'] = UserProfile.objects.get(user=request.user)
+    
     return render(request, 'marketplace/sell.html', context=context_dict)
 
 
