@@ -12,7 +12,7 @@ import random
 
 def populate():
     # 1. Create Tags
-    tags = ["Textbooks", "Electronics", "Furniture", "Clothing"]
+    tags = ["Textbooks", "Electronics", "Furniture", "Clothing", "Sports"]
     tag_objs = {}
     for name in tags:
         t = Tag.objects.get_or_create(tag_name=name)[0]
@@ -70,6 +70,27 @@ def populate():
             "price": 8.00,
             "description": "Used but works perfectly.",
             "is_sold": False,
+        },
+        {
+            "name": "Desk Lamp",
+            "tag": tag_objs["Furniture"],
+            "seller": user_profiles[2], # Charlie
+            "price": 5.00,
+            "description": "Bright white LED lamp. Very good condition.",
+        },
+        {
+            "name": "WAD2 Lecture Notes",
+            "tag": tag_objs["Textbooks"],
+            "seller": user_profiles[0], # Alice
+            "price": 0.00,
+            "description": "Handwritten notes for the final exam. Free for anyone!",
+        },
+        {
+            "name": "Tennis Racket",
+            "tag": tag_objs["Sports"],
+            "seller": user_profiles[1], # Bob
+            "price": 25.00,
+            "description": "Wilson racket. Only used for one semester.",
         },
     ]
 
