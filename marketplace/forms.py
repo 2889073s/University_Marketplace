@@ -41,3 +41,11 @@ class TagForm(forms.ModelForm):
     class Meta:
         model = Tag
         fields = ["tag_name"]
+
+class ChargeBalanceForm(forms.Form):
+    amount = forms.DecimalField(
+        label="Amount to add (£)", 
+        min_value=0.01, 
+        max_digits=10, 
+        decimal_places=2
+    )
