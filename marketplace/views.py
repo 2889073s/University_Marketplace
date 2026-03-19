@@ -219,6 +219,11 @@ def delete_product_page(request, product_name_slug):
         context_dict["product"] = product
     except Product.DoesNotExist:
         context_dict["product"] = None
+    
+    if product:
+        if request.method == 'POST':
+            product.delete()
+            return redirect('marketplace:home')
     return render(request, 'marketplace/delete_product.html', context=context_dict)
 
 def buy_product(request, seller_username_slug, product_name_slug):
