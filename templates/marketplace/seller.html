@@ -2,7 +2,7 @@
 
 {% block title_block %}
     {% if seller %}
-        seller : {{ seller.user.username }}
+        {{ seller.user.username }}'s Profile
     {% else %}
         Unknown seller
     {% endif %}
@@ -17,15 +17,16 @@
                 {% else %} 
                     <p> no image available </p>
                 {% endif %}
-                    <li> {{ seller.user.username }}</li>
-                    <li> {{ seller.user.email }}</li>
-                    <li> {{ seller.avg_rating }}</li>
+                    <li> Username: {{ seller.user.username }}</li>
+                    <li> Email: {{ seller.user.email }}</li>
+                    <li> Rating :{{ seller.avg_rating }}</li>
             </ul> 
         </div>
 
         <div>
             {% if products %}
                 <ul>
+                    Listed Products:
                     {% for product in products%}
                         <li>
                             <a href="{% url 'marketplace:product_page' product.seller.slug product.slug %}">

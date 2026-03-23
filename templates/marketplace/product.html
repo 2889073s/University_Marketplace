@@ -14,9 +14,9 @@
             <div>
                 <ul>
                     <li> {{ product.name }} </li>
-                    <li> {{ product.tag }} </li>
-                    <li> {{ product.seller }} </li>
-                    <li> {{ product.price }}</li>
+                    <li> Tags: {{ product.tag }} </li>
+                    <li> Seller: {{ product.seller }} </li>
+                    <li> Price: £{{ product.price }}</li>
                     <li> {{ product.description }}</li>
                     <li> <form method = "POST" action = "{% url 'marketplace:buy_product' product.seller.slug product.slug %}">
                         {% csrf_token %}
@@ -42,8 +42,8 @@
                     <li> <a href="{% url 'marketplace:seller_page' product.seller.slug %}">
                                 {{ product.seller.user.username }}
                     </a></li>
-                    <li> {{ product.seller.user.email }} </li>
-                    <li> {{ product.seller.avg_rating }} </li>
+                    <li> Seller Email: {{ product.seller.user.email }} </li>
+                    <li> Seller Rating: {{ product.seller.avg_rating }} </li>
                 </ul> 
             </div>
         {% endif %}

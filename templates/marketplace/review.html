@@ -7,6 +7,10 @@
 {% block body_block %}
         <h1>Leave a review</h1>
         <div>
-            <!-- add review form here and some code to stop poeople added reviews if they havent bought an item-->
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit">Submit Rating</button>
+            </form>
         </div>
 {% endblock %}

@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
-from marketplace.models import Product, UserProfile, Tag
+from marketplace.models import Product, Review, UserProfile, Tag
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
-from .forms import ProductForm, UserForm, UserProfileForm
+from .forms import ProductForm, ReviewForm, UserForm, UserProfileForm
 from django.contrib.auth import authenticate, login, logout
 from django.template.loader import render_to_string
 from django.http import HttpResponse
@@ -181,9 +181,29 @@ def sell_page(request):
     
     return render(request, 'marketplace/sell.html', context=context_dict)
 
-
+@login_required
 def review_page(request, seller_username_slug, product_name_slug):
     context_dict = {}
+    product = Product.objects.get(seller__slug=seller_username_slug, slug=product_name_slug)
+    
+    if request.method == 'POST':
+        form = ReviewForm(request.POST, request.FILES)
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.seller_reviewed = product.seller
+            form.save()
+            
+            reviews = Review.objects.filter(seller_reviewed=product.seller)
+            avg = sum(rev.rating for rev in reviews) / reviews.count()
+            product.seller.avg_rating = avg
+            product.seller.save()
+            
+            return redirect('marketplace:product_page', product_name_slug=product.slug,seller_username_slug=product.seller.slug)
+    else:
+        form = ReviewForm()
+    
+    context_dict['form'] = form
+    context_dict['product'] = product
     return render(request, 'marketplace/review.html', context=context_dict)
 
 @login_required
