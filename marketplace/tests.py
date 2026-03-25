@@ -106,5 +106,68 @@ class BasicTest(TestCase):
         self.assertEqual(self.buyer_profile.account_balance, 5.00)
 
 
-        
+class ModelTests(TestCase):
+    def setUp(self):
+        self.user, self.profile = add_user_profiles("testuser", "test@test.com", "password123")
+        self.tag = add_tag("Books")
+        self.product = add_product("Django Guide", self.profile, self.tag)
 
+    def test_user_profile_slug_generation(self):
+        #Tests if the slug is automatically generated from the username on save.
+        self.assertEqual(self.profile.slug, "testuser")
+
+    def test_product_slug_generation(self):
+        #Tests if the slug is automatically generated from the product name on save.
+        self.assertEqual(self.product.slug, "django-guide")
+
+    def test_tag_string_representation(self):
+        #Tests the __str__ method of the Tag model.
+        self.assertEqual(str(self.tag), "Books")
+
+
+class SearchTests(TestCase):
+    def setUp(self):
+        self.seller_user, self.seller_profile = add_user_profiles("seller2", "seller2@test.com", "password123")
+        self.tag = add_tag("Electronics")
+        self.product1 = add_product("Python Textbook", self.seller_profile, self.tag)
+        self.product2 = add_product("Desk Lamp", self.seller_profile, self.tag)
+
+    def test_search_by_query_string(self):
+        #Tests if filtering by query 'Python' returns the correct product.
+        response = self.client.get(reverse('marketplace:search_page'), {'q': 'Python'})
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(self.product1, response.context['products'])
+        self.assertNotIn(self.product2, response.context['products'])
+
+    def test_search_ajax_request(self):
+        #Tests if the AJAX request returns only the partial search results template.
+        response = self.client.get(
+            reverse('marketplace:search_page'),
+            {'q': 'Python'},
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest' # Simulates AJAX
+        )
+        self.assertEqual(response.status_code, 200)
+        # Verify that it doesn't use the full search.html template
+        self.assertNotContains(response, '<!DOCTYPE html>')
+
+
+class TopUpTests(TestCase):
+    def setUp(self):
+        self.user, self.profile = add_user_profiles("buyer2", "buyer2@test.com", "password123", account_balance=10.00)
+
+    def test_charge_balance_increases_funds(self):
+        #Tests if topping up £30 increases the user's balance from £10 to £40.
+        self.client.login(username="buyer2", password="password123")
+        
+        response = self.client.post(reverse('marketplace:charge_balance'), {'amount': '30.00'})
+        
+        #Should redirect back to profile page on success
+        self.assertEqual(response.status_code, 302)
+
+        self.profile.refresh_from_db()
+        self.assertEqual(self.profile.account_balance, 40.00)
+
+    def test_unauthenticated_user_cannot_top_up(self):
+        #Tests if topping up requires a logged-in user (redirects to login).
+        response = self.client.post(reverse('marketplace:charge_balance'), {'amount': '30.00'})
+        self.assertEqual(response.status_code, 302)
