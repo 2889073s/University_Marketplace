@@ -84,8 +84,9 @@ class BasicTest(TestCase):
 
         self.assertEqual(response.status_code, 302)
 
-        self.product.save()
-        self.seller_profile.save()
+        self.seller_profile.refresh_from_db() #reloads field values from database
+        self.buyer_profile.refresh_from_db()
+        self.product.refresh_from_db()
         
         self.assertFalse(self.product.is_sold)
         self.assertEqual(self.seller_profile.account_balance, inital__seller_balance)
@@ -93,18 +94,36 @@ class BasicTest(TestCase):
 
     def test_buyer_with_insufficient_funds_cannot_buy(self):
         inital__seller_balance = self.seller_profile.account_balance
-        self.buyer_profile.account_balance = 5.00
+        self.buyer_profile.account_balance = 5.00#test product is worth £10
+
         self.buyer_profile.save()
 
         self.client.login(username="buyer1", password = "test123456")
         response = self.client.post(reverse('marketplace:buy_product', args=[self.seller_profile.slug, self.product.slug]))
 
-        self.seller_profile.save()
+        self.seller_profile.refresh_from_db() #reloads field values from database
+        self.buyer_profile.refresh_from_db()
+        self.product.refresh_from_db()
         
         self.assertFalse(self.product.is_sold)
         self.assertEqual(self.seller_profile.account_balance, inital__seller_balance)
         self.assertEqual(self.buyer_profile.account_balance, 5.00)
 
+    def test_sucessful_buy(self):
+        inital__seller_balance = self.seller_profile.account_balance
+        self.buyer_profile.account_balance, inital__account_balance = 50.00, 50.00#test product is worth £10
+        self.buyer_profile.save()
+
+        self.client.login(username="buyer1", password = "test123456")
+        response = self.client.post(reverse('marketplace:buy_product', args=[self.seller_profile.slug, self.product.slug]))
+        
+        self.seller_profile.refresh_from_db() #reloads field values from database
+        self.buyer_profile.refresh_from_db()
+        self.product.refresh_from_db()
+
+        self.assertTrue(self.product.is_sold)
+        self.assertEqual(self.seller_profile.account_balance, (inital__seller_balance + 10.00))
+        self.assertEqual(self.buyer_profile.account_balance,(inital__account_balance  - 10.00))
 
 class ModelTests(TestCase):
     def setUp(self):

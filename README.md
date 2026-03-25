@@ -36,7 +36,11 @@ Steps to set up the django project
 
                 python population_script.py
 
+                python manage.py test marketplace
+
                python3 manage.py createsuperuser
+
+   - ------extra------ all the test should pass
    
 
 How to update code when the repo changes:
@@ -47,9 +51,16 @@ How to update code when the repo changes:
            
                 conda activate WADenv
    
-3) pull code from github
+2) pull code from github
    
                 git pull
+
+
+3) Run tests
+
+                python manage.py test marketplace
+   
+
 
     
 
