@@ -5,14 +5,23 @@
 {% endblock %}
 
 {% block body_block %}
-        <h1>Sell an item</h1>
-        <div>
-            <form method="post" enctype="multipart/form-data">
+<div class="container my-5">
+    <h2 class="text-center text-primary mb-4">Sell an Item</h2>
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm p-4">
+                <form method="post" enctype="multipart/form-data">
                     {% csrf_token %}
                     {{ form.as_p }}
-                    <button type="submit">Save</button>
-            </form>
+                    <button type="submit" class="btn btn-success btn-block mt-3">
+                        List Item
+                    </button>
+                    <a href="{% url 'marketplace:profile_page' %}" class="btn btn-secondary btn-block bt-2">
+                        Cancel
+                    </a>
+                </form>
+            </div>
         </div>
-
-
+    </div>
+</div>
 {% endblock %}

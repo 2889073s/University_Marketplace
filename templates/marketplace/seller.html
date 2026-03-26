@@ -1,44 +1,52 @@
 {% extends "marketplace/base.html" %}
 
 {% block title_block %}
-    {% if seller %}
-        {{ seller.user.username }}'s Profile
-    {% else %}
-        Unknown seller
-    {% endif %}
+{% if seller %}
+    {{ seller.user.username }}'s Profile
+{% else %}
+    Unknown Seller
+{% endif %}
 {% endblock %}
 
 {% block body_block %}
-    {% if seller %}
-        <div> 
-            <ul>                
-                {% if seller.profile_picture %}
-                    <img src="{{ seller.profile_picture.url }}" alt= "{{ seller.user.profile_picture}}" />
-                {% else %} 
-                    <p> no image available </p>
-                {% endif %}
-                    <li> Username: {{ seller.user.username }}</li>
-                    <li> Email: {{ seller.user.email }}</li>
-                    <li> Rating :{{ seller.avg_rating }}</li>
-            </ul> 
-        </div>
+<h1 class="text-center text-primary mb-4">Seller Profile</h1>
 
-        <div>
-            {% if products %}
-                <ul>
-                    Listed Products:
-                    {% for product in products%}
-                        <li>
-                            <a href="{% url 'marketplace:product_page' product.seller.slug product.slug %}">
-                                {{ product.name }}
-                            </a>
-                        </li>
-                    {% endfor %}
-                </ul>
-            {% else %}
-                <strong>There are no products</strong>
-            {% endif %}
-        </div>
-    {% endif %}
+<div class="row">
+    <div class="col-md-3 text-center">
+        {% if seller.profile_picture %}
+            <img src="{{ seller.profile_picture.url }}" class="img-fluid rounded-circle mb-3" alt="{{ seller.user.username }}">
+        {% else %}
+            <div class="bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center" style="width:150px; height:150px; margin:auto;">
+                No Image
+            </div>
+        {% endif %}
+        <p><strong>Username:</strong> {{ seller.user.username }}</p>
+        <p><strong>Email:</strong> {{ seller.user.email }}</p>
+        <p><strong>Rating:</strong> {{ seller.avg_rating }}</p>
+    </div>
 
+    <div class="col-md-9">
+        <h3>Products Listed</h3>
+        <div class="row g-3">
+            {% for product in products %}
+            <div class="col-6 col-md-4">
+                <div class="card h-100">
+                    {% if product.image %}
+                    <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                    {% else %}
+                    <div class="bg-secondary text-white d-flex align-items-center justify-content-center" style="height:150px;">No Image</div>
+                    {% endif %}
+                    <div class="card-body text-center">
+                        <h6>{{ product.name }}</h6>
+                        <p>£{{ product.price }}</p>
+                        <a href="{% url 'marketplace:product_page' product.seller.slug product.slug %}" class="btn btn-sm btn-primary">View</a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <p>No products available</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
 {% endblock %}

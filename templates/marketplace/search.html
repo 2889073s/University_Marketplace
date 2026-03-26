@@ -5,73 +5,78 @@
 {% endblock %}
 
 {% block body_block %}
-    <h1>Search</h1>
-
-    <form method="get" id="search-form">
-        <input type="text" name="q" id="search-input" placeholder="Search products..." value="{{ query }}">
-
-        <select name="tag" id="tag-filter">
-            <option value="">All Tags</option>
-            {% for tag in tags %}
-                <option value="{{ tag.tag_id }}" {% if selected_tag == tag.tag_id|stringformat:"s" %}selected{% endif %}>
-                    {{ tag.tag_name }}
-                </option>
-            {% endfor %}
-        </select>
-
-        <select name="sort" id="sort-filter">
-            <option value="">Newest</option>
-            <option value="price_asc" {% if selected_sort == "price_asc" %}selected{% endif %}>Price: Low to High</option>
-            <option value="price_desc" {% if selected_sort == "price_desc" %}selected{% endif %}>Price: High to Low</option>
-        </select>
-
-        <button type="submit">Search</button>
+<div class="container my-5">
+    <h2 class="text-center text-primary mb-4">Search Products</h2>
+    <form method="get" id="search-form" class="mb-4">
+        <div class="form-row">
+            <div class="col-md-5 mb-2">
+                <input type="text" name="q" id="search-input" class="form-control" placeholder="Search products..." value="{{ query }}">
+            </div>
+            <div class="col-md-3 mb-2">
+                <select name="tag" id="tag-filter" class="form-control">
+                    <option value="">All Tags</option>
+                    {% for tag in tags %}
+                        <option value="{{ tag.tag_id }}" 
+                        {% if selected_tag == tag.tag_id|stringformat:"s" %}selected{% endif %}>
+                            {{ tag.tag_name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2 mb-2">
+                <select name="sort" id="sort-filter">
+                    <option value="">Newest</option>
+                    <option value="price_asc" {% if selected_sort == "price_asc" %}selected{% endif %}>Price: Low to High</option>
+                    <option value="price_desc" {% if selected_sort == "price_desc" %}selected{% endif %}>Price: High to Low</option>
+                </select>
+            </div>
+            <div class="col-md-2 mb-2">
+                <button type="submit" class="btn btn-primary btn-block">Search</button>
+            </div>
+        </div>
     </form>
-
-    <hr>
-
     <div id="search-results">
         {% include "marketplace/partials/search_results.html" %}
     </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.getElementById('search-form');
+        const input = document.getElementById('search-input');
+        const tagFilter = document.getElementById('tag-filter');
+        const sortFilter = document.getElementById('sort-filter');
+        const resultsContainer = document.getElementById('search-results');
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const form = document.getElementById('search-form');
-            const input = document.getElementById('search-input');
-            const tagFilter = document.getElementById('tag-filter');
-            const sortFilter = document.getElementById('sort-filter');
-            const resultsContainer = document.getElementById('search-results');
+        let debounceTimer;
 
-            let debounceTimer;
+        function fetchResults() {
+            const formData = new FormData(form);
+            const params = new URLSearchParams(formData);
 
-            function fetchResults() {
-                const formData = new FormData(form);
-                const params = new URLSearchParams(formData);
+            fetch("{% url 'marketplace:search_page' %}?" + params.toString(), {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.text())
+            .then(html => {
+                resultsContainer.innerHTML = html;
+            })
+            .catch(error => console.error('AJAX search error:', error));
+        }
 
-                fetch("{% url 'marketplace:search_page' %}?" + params.toString(), {
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                })
-                .then(response => response.text())
-                .then(html => {
-                    resultsContainer.innerHTML = html;
-                })
-                .catch(error => console.error('AJAX search error:', error));
-            }
-
-            input.addEventListener('input', function () {
-                clearTimeout(debounceTimer);
-                debounceTimer = setTimeout(fetchResults, 300);
-            });
-
-            tagFilter.addEventListener('change', fetchResults);
-            sortFilter.addEventListener('change', fetchResults);
-
-            form.addEventListener('submit', function (e) {
-                e.preventDefault();
-                fetchResults();
-            });
+        input.addEventListener('input', function () {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(fetchResults, 300);
         });
-    </script>
+
+        tagFilter.addEventListener('change', fetchResults);
+        sortFilter.addEventListener('change', fetchResults);
+
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            fetchResults();
+        });
+    });
+</script>
 {% endblock %}

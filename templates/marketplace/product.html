@@ -9,42 +9,43 @@
 {% endblock %}
 
 {% block body_block %}
-        {% if product %}
-            <h1>{{ product.name }}</h1>
-            <div>
-                <ul>
-                    <li> {{ product.name }} </li>
-                    <li> Tags: {{ product.tag }} </li>
-                    <li> Seller: {{ product.seller }} </li>
-                    <li> Price: £{{ product.price }}</li>
-                    <li> {{ product.description }}</li>
-                    <li> <form method = "POST" action = "{% url 'marketplace:buy_product' product.seller.slug product.slug %}">
-                        {% csrf_token %}
-                        <button type="submit"> Buy </button>
-                        </form>
-                    </li> 
-                </ul> 
-            </div>
-            <div>
-                {% if product.image %}
-                    <img src="{{ product.image.url }}" alt= "{{ product.name }}" />
-                {% else %}
-                    <p> no image available </p>
-                {% endif %}
-            </div>
-            <div>
-                <ul>
-                    {% if product.seller.profile_picture %}
-                        <img src="{{ product.seller.profile_picture.url }}" alt= "{{ product.seller.user.profile_picture}}" />
-                    {% else %} 
-                        <p> no image available </p>
-                    {% endif %}
-                    <li> <a href="{% url 'marketplace:seller_page' product.seller.slug %}">
-                                {{ product.seller.user.username }}
-                    </a></li>
-                    <li> Seller Email: {{ product.seller.user.email }} </li>
-                    <li> Seller Rating: {{ product.seller.avg_rating }} </li>
-                </ul> 
+<div class="row">
+    <div class="col-md-6">
+        {% if product.image %}
+            <img src="{{ product.image.url }}" class="img-fluid rounded" alt="{{ product.name }}">
+        {% else %}
+            <div class="bg-secondary text-white d-flex align-items-center justify-content-center" style="height:300px;">
+                No Image
             </div>
         {% endif %}
+    </div>
+    <div class="col-md-6">
+        <h1>{{ product.name }}</h1>
+        <p><strong>Category:</strong> {{ product.tag }}</p>
+        <p><strong>Seller:</strong> {{ product.seller.user.username }}</p>
+        <p><strong>Price:</strong> £{{ product.price }}</p>
+        <p>{{ product.description }}</p>
+        <form method="POST" action="{% url 'marketplace:buy_product' product.seller.slug product.slug %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-success">Buy</button>
+        </form>
+    </div>
+</div>
+<hr>
+<div class="row mt-4">
+    <div class="col-md-3">
+        {% if product.seller.profile_picture %}
+            <img src="{{ product.seller.profile_picture.url }}" class="img-fluid rounded-circles" alt="{{ product.seller.user.username }}">
+        {% else %}
+            <div class="bg-secondary text-white text-center rounded-circle" style="width:100px; height:100px; line-height:100px;">No Image</div>
+        {% endif %}
+    </div>
+    <div class="col-md-9">
+        <h5>Seller Info</h5>
+        <p><strong>Username:</strong> {{ product.seller.user.username }}</p>
+        <p><strong>Email:</strong> {{ product.seller.user.email }}</p>
+        <p><strong>Rating:</strong> {{ product.seller.avg_rating }}</p>
+        <a href="{% url 'marketplace:seller_page' product.seller.slug %}" class="btn btn-primary btn-sm">View Seller Profile</a>
+    </div>
+</div>
 {% endblock %}

@@ -5,18 +5,22 @@
 {% endblock %}
 
 {% block body_block %}
-        <h1> Register </h1>
+<h1 class="test-center text-primary mb-4">Register</h1>
+<div class="row justify-content-center">
+    <div class="col-md-6">
         {% if user.is_authenticated %}
-            <p> Thank you for registering</p>
-            <a href="{% url 'marketplace:home' %}">Return to the homepage.</a><br />
+            <div class="alert alert-success">
+                Thank you for registering
+            </div>
+            <a href="{% url 'marketplace:home' %}" class="btn btn-primary">Return to Home Page</a>
         {% else %}
-            <form id="user_form" method="POST" action="{% url 'marketplace:register' %}"
-                enctype="multipart/form-data">
+            <form method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
                 {{ user_form.as_p }}
                 {{ profile_form.as_p }}
-                <input type="submit" name="submit" value="Register" />
-                </form>
-            {% csrf_token %}
+                <button type="submit" class="btn btn-primary w-100">Register</button>
+            </form>
         {% endif %}
+    </div>
+</div>
 {% endblock %}

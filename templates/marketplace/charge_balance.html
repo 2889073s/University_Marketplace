@@ -1,15 +1,30 @@
 {% extends 'marketplace/base.html' %}
 
-{% block body_block %}
-<div class="container">
-    <h1>Top-up Your Account</h1>
-    <p>Current Balance: <strong>£{{ profile.account_balance }}</strong></p>
+{% block title_block %}
+    Top-up Balance
+{% endblock %}
 
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-success">Add Funds</button>
-        <a href="{% url 'marketplace:profile_page' %}" class="btn btn-secondary">Cancel</a>
-    </form>
+{% block body_block %}
+<div class="container my-4">
+    <h2 class="text-center text-primary mb-4">Top-up Your Account</h2>
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm p-4">
+                <p class="mb-3"><strong>Current Balance:</strong>£{{ profile.account_balance }}</p>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        {{ form.amount.label_tag }}
+                        {{ form.amount }}
+                        {% if form.amount.errors %}
+                            <div class="text-danger small">{{ form.amount.errors}}</div>
+                        {% endif %}
+                    </div>
+                    <button type="submit" class="btn btn-success btn-block mt-3">Add Funds</button>
+                    <a href="{% url 'marketplace:profile_page' %}" class="btn btn-secondary btn-block mt-2">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

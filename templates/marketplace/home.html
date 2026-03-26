@@ -5,22 +5,32 @@
 {% endblock %}
 
 {% block body_block %}
-        <h1>Home</h1>
-        <div>
-            {% if products %}
-                <ul>
-                    {% for product in products%}
-                        <li>
-                            <a href="{% url 'marketplace:product_page' product.seller.slug product.slug %}">
-                                {{ product.name }}
-                            </a>
-                        </li>
-                    {% endfor %}
-                </ul>
-            {% else %}
-                <strong>There are no products</strong>
-            {% endif %}
+<h1 class="text-center text-primary mb-4">Home Page</h1>
+<div class="row g-4">
+    {% for product in products %}
+    <div class="col-6 col-md-4 col-lg-2 d-flex">
+        <div class="col">
+            <div class="card h-100">
+                {% if product.image %}
+                <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                {% else %}
+                <div class="card-img-top bg-secondary text-white d-flex align-items-center justify-content-center" style="height:200px;">
+                    No Image
+                </div>
+                {% endif %}
+                <div class="card-body">
+                    <h6 class="card-title">{{ product.name }}</h6>
+                    <p class="card-text mb-1">Category: {{ product.tag }}</p>
+                    <p class="card-text mb-1">Seller: {{ product.seller.user.username }}</p>
+                    <p class="card-text">£{{ product.price }}</p>
+                </div>
+                <div class="card-footer text-center">
+                    <a href="{% url 'marketplace:product_page' product.seller.slug product.slug %}" class="btn btn-sm btn-primary">View</a>
+                </div>
+            </div>
         </div>
-
-
-{% endblock %}
+        {% empty %}
+        <p>No products available.</p>
+        {% endfor %}
+    </div>
+    {% endblock %}
