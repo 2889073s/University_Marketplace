@@ -70,7 +70,7 @@ def register(request):
 
     if request.method == 'POST':
         user_form = UserForm(request.POST)
-        profile_form = UserProfileForm(request.POST)
+        profile_form = UserProfileForm(request.POST, request.FILES)
 
         if user_form.is_valid() and profile_form.is_valid():
             user = user_form.save()
@@ -83,7 +83,7 @@ def register(request):
             profile.user = user
 
             if 'picture' in request.FILES:
-                profile.picture = request.FILES['profile_picture']
+                profile.profile_picture = request.FILES['profile_picture']
 
             profile.save()
 
